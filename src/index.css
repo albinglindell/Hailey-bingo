@@ -66,3 +66,12 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+.custom-float-btn .ant-float-btn-body {
+  background: #ffb2b2 !important;
+  border-color: #ffb2b2 !important;
+}
+.custom-float-btn .ant-float-btn-body:hover {
+  background: #e18b8b !important;
+  border-color: #e18b8b !important;
+}
