@@ -241,7 +241,7 @@ const App = () => {
               style={{
                 marginBottom: 20,
                 borderRadius: 12,
-                fontSize: 12,
+                fontSize: 16,
                 padding: 8,
                 width: "100%",
                 maxWidth: 340,
