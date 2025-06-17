@@ -229,7 +229,7 @@ const App = () => {
                 fontWeight: 700,
                 margin: 0,
                 marginBottom: 24,
-                color: theme === "dark" ? "#fff" : SECONDARY_COLOR,
+                color: SECONDARY_COLOR,
               }}
             >
               Hailey Bingo
