@@ -160,7 +160,7 @@ const App = () => {
     >
       <div
         style={{
-          minHeight: "100svh",
+          minHeight: "100dvh",
           minWidth: "100vw",
           background: theme === "dark" ? "#18191a" : "#f6f7fb",
           fontFamily: "Inter, Arial, sans-serif",
