@@ -11,6 +11,7 @@ import "antd/dist/reset.css";
 import Confetti from "react-confetti";
 import questionsData from "./questions.json";
 import { BulbOutlined, BulbFilled } from "@ant-design/icons";
+import HaileyIcon from "./assets/svg/hailey_logo_gray.svg";
 
 type BingoCell = {
   question: string;
@@ -20,6 +21,7 @@ type BingoCell = {
 type Question = {
   id: number;
   question: string;
+  answer: string;
 };
 
 const SECONDARY_COLOR = "#ffb2b2";
@@ -78,6 +80,8 @@ const App = () => {
   }));
   const [search, setSearch] = useState("");
   const [theme, setTheme] = useState<"light" | "dark">(getInitialTheme());
+  const [answerInput, setAnswerInput] = useState("");
+  const [answerError, setAnswerError] = useState("");
 
   useEffect(() => {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(board));
@@ -98,6 +102,9 @@ const App = () => {
       row,
       col,
     }));
+    const correctAnswer = (questionsData as Question[])[row * 5 + col].answer;
+    setAnswerInput(board[row][col].checked ? correctAnswer : "");
+    setAnswerError("");
   };
 
   const onCellKeyDownHandler = (
@@ -116,6 +123,15 @@ const App = () => {
 
   const onModalCheckHandler = () => {
     if (modal.row === -1 || modal.col === -1) return;
+    const correctAnswer = (questionsData as Question[])[
+      modal.row * 5 + modal.col
+    ].answer
+      .trim()
+      .toLowerCase();
+    if (answerInput.trim().toLowerCase() !== correctAnswer) {
+      setAnswerError("Incorrect answer. Please try again.");
+      return;
+    }
     setBoard((prev: BingoCell[][]) =>
       prev.map((r: BingoCell[], rIdx: number) =>
         rIdx !== modal.row
@@ -160,7 +176,7 @@ const App = () => {
     >
       <div
         style={{
-          minHeight: "100dvh",
+          minHeight: "100svh",
           minWidth: "100vw",
           background: theme === "dark" ? "#18191a" : "#f6f7fb",
           fontFamily: "Inter, Arial, sans-serif",
@@ -191,11 +207,13 @@ const App = () => {
         )}
         <div
           style={{
-            width: "100vw",
+            width: "100svw",
             height: "100vh",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            flexDirection: "column",
+            gap: 24,
             padding: 24,
             boxSizing: "border-box",
             background: theme === "dark" ? "#111113" : undefined,
@@ -212,7 +230,7 @@ const App = () => {
               width: "100%",
               height: "100%",
               maxWidth: 700,
-              maxHeight: 700,
+              maxHeight: "90%",
               padding: 24,
               display: "flex",
               flexDirection: "column",
@@ -350,6 +368,7 @@ const App = () => {
               )}
             </div>
           </div>
+          <img src={HaileyIcon} alt="Hailey" style={{ width: 110 }} />
           <Modal open={modal.open} onCancel={onModalCloseHandler} footer={null}>
             <div
               style={{
@@ -378,6 +397,32 @@ const App = () => {
                   ? board[modal.row][modal.col].question
                   : ""}
               </div>
+              <Input
+                placeholder="Type your answer..."
+                value={answerInput}
+                onChange={(e) => {
+                  setAnswerInput(e.target.value);
+                  setAnswerError("");
+                }}
+                style={{
+                  marginBottom: 12,
+                  borderRadius: 8,
+                  fontSize: 16,
+                  padding: 8,
+                }}
+                aria-label="Answer the question"
+              />
+              {answerError && (
+                <div
+                  style={{
+                    color: SECONDARY_COLOR,
+                    marginBottom: 8,
+                    fontSize: 14,
+                  }}
+                >
+                  {answerError}
+                </div>
+              )}
               <div style={{ display: "flex", gap: 12, width: "100%" }}>
                 <Button
                   type="primary"
@@ -393,6 +438,7 @@ const App = () => {
                   onFocus={(e) =>
                     (e.currentTarget.style.background = "#e18b8b")
                   }
+                  disabled={answerInput.trim().length === 0}
                 >
                   {modal.row !== -1 &&
                   modal.col !== -1 &&
