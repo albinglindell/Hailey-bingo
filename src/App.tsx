@@ -10,7 +10,11 @@ import {
 import "antd/dist/reset.css";
 import Confetti from "react-confetti";
 import questionsData from "./questions.json";
-import { BulbOutlined, BulbFilled } from "@ant-design/icons";
+import {
+  BulbOutlined,
+  BulbFilled,
+  QuestionCircleOutlined,
+} from "@ant-design/icons";
 import HaileyIcon from "./assets/svg/hailey_logo_gray.svg";
 
 type BingoCell = {
@@ -82,6 +86,7 @@ const App = () => {
   const [theme, setTheme] = useState<"light" | "dark">(getInitialTheme());
   const [answerInput, setAnswerInput] = useState("");
   const [answerError, setAnswerError] = useState("");
+  const [infoModalOpen, setInfoModalOpen] = useState(false);
 
   useEffect(() => {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(board));
@@ -241,17 +246,61 @@ const App = () => {
               transition: "background 0.3s",
             }}
           >
-            <h1
+            <div
               style={{
-                fontSize: 28,
-                fontWeight: 700,
-                margin: 0,
+                position: "relative",
+                width: "100%",
                 marginBottom: 24,
-                color: SECONDARY_COLOR,
               }}
             >
-              Hailey Bingo
-            </h1>
+              <h1
+                style={{
+                  fontSize: 28,
+                  fontWeight: 700,
+                  margin: 0,
+                  color: SECONDARY_COLOR,
+                  textAlign: "center",
+                }}
+              >
+                Hailey Bingo
+              </h1>
+              <button
+                onClick={() => setInfoModalOpen(() => true)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    setInfoModalOpen(() => true);
+                  }
+                }}
+                style={{
+                  position: "absolute",
+                  top: "50%",
+                  right: 0,
+                  transform: "translateY(-50%)",
+                  width: 24,
+                  height: 24,
+                  borderRadius: "50%",
+                  border: "none",
+                  background: theme === "dark" ? "#18191a" : "#F5F5F5",
+                  color: "#000",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  outline: "none",
+                  transition: "background 0.2s",
+                  padding: 0,
+                }}
+                aria-label="Show game instructions"
+                tabIndex={0}
+              >
+                <QuestionCircleOutlined
+                  style={{
+                    fontSize: 12,
+                    color: theme === "dark" ? "#fff" : "#222",
+                  }}
+                />
+              </button>
+            </div>
             <Input
               placeholder="Search a question..."
               value={search}
@@ -450,6 +499,25 @@ const App = () => {
                   Close
                 </Button>
               </div>
+            </div>
+          </Modal>
+          <Modal
+            open={infoModalOpen}
+            onCancel={() => setInfoModalOpen(() => false)}
+            footer={null}
+            title="How to Play"
+          >
+            <div
+              style={{
+                padding: "16px 0",
+                fontSize: 16,
+                lineHeight: 1.6,
+                color: theme === "dark" ? "#e0e0e0" : "#333",
+                textAlign: "center",
+              }}
+            >
+              Write the first name of the colleague who matches each fact. First
+              to complete a row, column, or diagonal wins.
             </div>
           </Modal>
           <FloatButton
